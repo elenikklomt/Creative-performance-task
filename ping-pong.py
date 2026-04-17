@@ -1,3 +1,6 @@
+# Pong by @elena
+# Licensed under the MIT License
+
 from turtle import *
 import time
 import random
@@ -76,51 +79,71 @@ screen.onkeypress(paddle_a_down, "s")
 screen.onkeypress(paddle_b_up, "Up")
 screen.onkeypress(paddle_b_down, "Down")
 
-max_score = 7
+max_score = 5
+game_over = False
+
+def celebrate_winner(message):
+    pen.clear()
+    pen.goto(0, 40)
+    pen.write(message, align="center", font=("Courier", 36, "bold"))
+
+    confetti = Turtle()
+    confetti.hideturtle()
+    confetti.speed(0)
+    confetti.penup()
+
+    colors = ["red", "yellow", "blue", "green", "purple", "orange", "pink", "white"]
+
+    for _ in range(50):
+        confetti.goto(random.randint(-380, 380), random.randint(-280, 280))
+        confetti.dot(random.randint(6, 12), random.choice(colors))
 
 while True:
     screen.update()
     time.sleep(0.01)
 
-    ball.setx(ball.xcor() + ball.dx)
-    ball.sety(ball.ycor() + ball.dy)
+    if not game_over:
+        ball.setx(ball.xcor() + ball.dx)
+        ball.sety(ball.ycor() + ball.dy)
 
-    if ball.ycor() > 290:
-        ball.sety(290)
-        ball.dy *= -1
+        if ball.ycor() > 290:
+            ball.sety(290)
+            ball.dy *= -1
 
-    if ball.ycor() < -290:
-        ball.sety(-290)
-        ball.dy *= -1
+        if ball.ycor() < -290:
+            ball.sety(-290)
+            ball.dy *= -1
 
-    if ball.xcor() > 390:
-        score_a += 1
-        pen.clear()
-        pen.write(f"Player A: {score_a}  Player B: {score_b}",
-                  align="center", font=("Courier", 24, "normal"))
-        reset_ball()
+        if ball.xcor() > 390:
+            score_a += 1
+            pen.clear()
+            pen.write(f"Player A: {score_a}  Player B: {score_b}",
+                      align="center", font=("Courier", 24, "normal"))
+            reset_ball()
 
-    if ball.xcor() < -390:
-        score_b += 1
-        pen.clear()
-        pen.write(f"Player A: {score_a}  Player B: {score_b}",
-                  align="center", font=("Courier", 24, "normal"))
-        reset_ball()
+        if ball.xcor() < -390:
+            score_b += 1
+            pen.clear()
+            pen.write(f"Player A: {score_a}  Player B: {score_b}",
+                      align="center", font=("Courier", 24, "normal"))
+            reset_ball()
 
-    if (340 < ball.xcor() < 350) and (paddle_b.ycor() - 50 < ball.ycor() < paddle_b.ycor() + 50):
-        ball.setx(340)
-        ball.dx *= -1
+        if (340 < ball.xcor() < 350) and (paddle_b.ycor() - 50 < ball.ycor() < paddle_b.ycor() + 50):
+            ball.setx(340)
+            ball.dx *= -1
 
-    if (-350 < ball.xcor() < -340) and (paddle_a.ycor() - 50 < ball.ycor() < paddle_a.ycor() + 50):
-        ball.setx(-340)
-        ball.dx *= -1
+        if (-350 < ball.xcor() < -340) and (paddle_a.ycor() - 50 < ball.ycor() < paddle_a.ycor() + 50):
+            ball.setx(-340)
+            ball.dx *= -1
 
-    if score_a >= max_score:
-        pen.clear()
-        pen.write("Player A wins congratulations!", align="center", font=("Courier", 36, "normal"))
-        break
+        if score_a >= max_score:
+            game_over = True
+            celebrate_winner("Player A wins! 🎉")
+            time.sleep(0.1)
 
-    if score_b >= max_score:
-        pen.clear()
-        pen.write("Player B wins congratulations!", align="center", font=("Courier", 36, "normal"))
-        break
+        if score_b >= max_score:
+            game_over = True
+            celebrate_winner("Player B wins! 🎉")
+            time.sleep(0.1)
+
+screen.mainloop()
